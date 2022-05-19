@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../layout/compose-model-1652854791241.xml" value="0.2512668918918919" />
+        <entry key="../../../../../layout/compose-model-1652867757135.xml" value="0.12162162162162163" />
+        <entry key="../../../../../layout/compose-model-1652885433527.xml" value="0.22382671480144403" />
+        <entry key="../../../../../layout/compose-model-1652893114191.xml" value="0.22382671480144403" />
+        <entry key="../../../../../layout/compose-model-1652896529291.xml" value="0.13518518518518519" />
+        <entry key="../../../../../layout/compose-model-1652897160254.xml" value="0.10138888888888889" />
+        <entry key="../../../../../layout/compose-model-1652897606245.xml" value="0.125" />
+        <entry key="../../../../../layout/compose-model-1652902350145.xml" value="0.1939374185136897" />
+        <entry key="../../../../../layout/compose-model-1652902846876.xml" value="0.25" />
+        <entry key="../../../../../layout/compose-model-1652902886639.xml" value="1.0" />
+        <entry key="../../../../../layout/compose-model-1652941320750.xml" value="0.335" />
+        <entry key="../../../../../layout/compose-model-1652942920386.xml" value="0.1361111111111111" />
+        <entry key="../../../../../layout/compose-model-1652949227220.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1652961547181.xml" value="0.375" />
+        <entry key="../../../../../layout/compose-model-1652970917028.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1652977840001.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/art_clear.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/art_fog.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/art_light_clouds.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/art_light_rain.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/art_snow.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
