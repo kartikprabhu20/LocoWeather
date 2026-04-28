@@ -19,6 +19,11 @@
         <entry key="../../../../../layout/compose-model-1652961547181.xml" value="0.375" />
         <entry key="../../../../../layout/compose-model-1652970917028.xml" value="0.1" />
         <entry key="../../../../../layout/compose-model-1652977840001.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1652993329685.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1652994015270.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1652996087475.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1652996088507.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1653018672210.xml" value="0.32186732186732187" />
         <entry key="app/src/main/res/drawable/art_clear.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/art_fog.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/art_light_clouds.xml" value="0.1" />
@@ -28,7 +33,8 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
