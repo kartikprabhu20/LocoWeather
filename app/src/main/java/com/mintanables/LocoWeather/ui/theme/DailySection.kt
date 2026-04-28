@@ -96,8 +96,8 @@ fun DailyListItem(item: DailyItem, modifier: Modifier = Modifier) {
         Spacer(Modifier.width(16.dp))
 
         TitleSubtitleText(
-            title = "${item.temperatureHigh} \u2109", 
-            subtitle = "${item.temperatureLow} \u2109"
+            title = "${item.temperatureHigh} ${item.unitSymbol}", 
+            subtitle = "${item.temperatureLow} ${item.unitSymbol}"
         )
     }
 }

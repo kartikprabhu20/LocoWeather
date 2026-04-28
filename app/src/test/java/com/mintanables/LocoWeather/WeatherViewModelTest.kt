@@ -82,9 +82,13 @@ class WeatherViewModelTest {
             .build()
             .create(WeatherService::class.java)
 
-        weatherRemoteSource = WeatherRemoteSource(weatherService)
+        val settingsRepository = org.mockito.Mockito.mock(com.mintanables.LocoWeather.domain.repository.SettingsRepository::class.java)
+        org.mockito.Mockito.`when`(settingsRepository.getLocation()).thenReturn("")
+        org.mockito.Mockito.`when`(settingsRepository.getUnit()).thenReturn("imperial")
+
+        weatherRemoteSource = WeatherRemoteSource(weatherService, settingsRepository)
         weatherRepository = WeatherRepositoryImpl(weatherRemoteSource)
-        viewModel = WeatherViewModel(weatherRepository)
+        viewModel = WeatherViewModel(weatherRepository, settingsRepository)
     }
 
 //    @Test

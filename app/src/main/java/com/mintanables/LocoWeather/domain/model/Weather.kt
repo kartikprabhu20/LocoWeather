@@ -50,7 +50,8 @@ data class HourlyItem(
     @SerializedName("weather") var weather: List<WeatherCondition>? = null,
     // Add these for the UI to map internally like before
     var formatedTime: String = "", 
-    var iconId: Int = 0
+    var iconId: Int = 0,
+    var unitSymbol: String = "\u2109"
 )
 
 data class DailyItem(
@@ -73,7 +74,8 @@ data class DailyItem(
     var temperatureLow: Double = 0.0,
     var temperatureHigh: Double = 0.0,
     var date: String = "",
-    var iconId: Int = 0
+    var iconId: Int = 0,
+    var unitSymbol: String = "\u2109"
 )
 
 data class Temp(

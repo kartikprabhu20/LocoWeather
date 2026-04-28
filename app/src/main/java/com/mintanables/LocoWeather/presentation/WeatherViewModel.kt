@@ -24,7 +24,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherRepository: WeatherRepositoryImpl) : ViewModel(){
+class WeatherViewModel @Inject constructor(
+    private val weatherRepository: WeatherRepositoryImpl,
+    private val settingsRepository: com.mintanables.LocoWeather.domain.repository.SettingsRepository
+) : ViewModel(){
 
     private val _weather = MutableStateFlow(Weather())
     val weather : MutableStateFlow<Weather>
@@ -42,7 +45,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
     var currentVisibility = mutableStateOf("")
     var currentDewpoint = mutableStateOf("")
 
-
     val _hourlyList = MutableStateFlow<List<HourlyItem>>(emptyList())
     val hourlyList: StateFlow<List<HourlyItem>>
         get() = _hourlyList
@@ -58,13 +60,16 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
                     Log.i(TAG,"[WeatherViewModel] " +it.weather.toString())
                     _weather.value = it.weather
                     val current = _weather.value.current
+                    
+                    val symbol = if (settingsRepository.getUnit() == "metric") "\u2103" else "\u2109"
+
                     currentDate.value = getFormattedDate(current?.dt)
                     currentSummary.value = current?.weather?.firstOrNull()?.description?.replaceFirstChar { it.uppercase() } ?: "--"
-                    currentTemperature.value = String.format("%.2f", current?.temp)
-                    currentPressure.value = String.format("%.2f",current?.pressure )
+                    currentTemperature.value = String.format("%.2f %s", current?.temp, symbol)
+                    currentPressure.value = String.format("%.2f hPa",current?.pressure )
                     currentVisibility.value = current?.visibility.toString()
-                    currentHumidity.value =  String.format("%.2f",current?.humidity)
-                    currentDewpoint.value =  String.format("%.2f",current?.dewPoint)
+                    currentHumidity.value =  String.format("%.2f %%",current?.humidity)
+                    currentDewpoint.value =  String.format("%.2f %s",current?.dewPoint, symbol)
                     currentImageIcon.value = formatIcons(current?.weather?.firstOrNull()?.icon)
                     _dailyList.value = _weather.value.daily?.map{
                         it.apply {
@@ -72,6 +77,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
                             temperatureHigh =  String.format(Locale.US, "%.2f", it.temp.max).toDouble()
                             date = getFormattedDateOnly(it.dt)
                             iconId = formatIcons(it.weather?.firstOrNull()?.icon)
+                            this.unitSymbol = symbol
                         }
                     } ?: emptyList()
 
@@ -80,6 +86,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
                             temp = String.format(Locale.US, "%.2f", it.temp).toDouble()
                             formatedTime = getFormattedTime(it.dt)
                             iconId = formatIcons(it.weather?.firstOrNull()?.icon)
+                            this.unitSymbol = symbol
                         }
                     } ?: emptyList()
 
@@ -93,8 +100,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
             }
         }
     }
-
-
 
     fun getWeatherInfoByLocation(location: String) = viewModelScope.launch(Dispatchers.IO) {
          weatherRepository.getWeather(location)

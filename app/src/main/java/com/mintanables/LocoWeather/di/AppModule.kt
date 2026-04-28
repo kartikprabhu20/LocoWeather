@@ -49,7 +49,19 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideWeatherRemoteDataSource(weatherService: WeatherService): WeatherRemoteSource {
-        return WeatherRemoteSource(weatherService)
+    fun provideWeatherRemoteDataSource(weatherService: WeatherService, settingsRepository: com.mintanables.LocoWeather.domain.repository.SettingsRepository): WeatherRemoteSource {
+        return WeatherRemoteSource(weatherService, settingsRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@dagger.hilt.android.qualifiers.ApplicationContext context: android.content.Context): android.content.SharedPreferences {
+        return context.getSharedPreferences("LocoWeatherPrefs", android.content.Context.MODE_PRIVATE)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(sharedPreferences: android.content.SharedPreferences): com.mintanables.LocoWeather.domain.repository.SettingsRepository {
+        return com.mintanables.LocoWeather.data.repository.SettingsRepositoryImpl(sharedPreferences)
     }
 }

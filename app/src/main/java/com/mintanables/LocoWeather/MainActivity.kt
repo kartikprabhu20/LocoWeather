@@ -17,6 +17,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.mintanables.LocoWeather.Utils.LocationUtils
 import com.mintanables.LocoWeather.data.Constants.BERLIN_LATITUDE
 import com.mintanables.LocoWeather.data.Constants.BERLIN_LONGITUDE
@@ -32,12 +34,15 @@ class MainActivity : ComponentActivity() {
     val PERMISSION_ID = 111
 
     private val viewModel: WeatherViewModel by viewModels()
+    @javax.inject.Inject
+    lateinit var settingsRepository: com.mintanables.LocoWeather.domain.repository.SettingsRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             LocoWeatherTheme {
-                MainScreen()
+                MainAppNavHost(viewModel, settingsRepository)
             }
         }
         getLocation()
@@ -52,9 +57,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun updateLocation(){
-        LocationUtils.getLocation(this) { location ->
-            Log.i(TAG, location.toString())
-            viewModel.getWeatherInfoByLocation("${location?.latitude ?: BERLIN_LATITUDE},${location?.longitude ?: BERLIN_LONGITUDE}")
+        val customLoc = settingsRepository.getLocation().trim()
+        if (customLoc.isNotEmpty()) {
+            viewModel.getWeatherInfoByLocation(customLoc)
+        } else {
+            LocationUtils.getLocation(this) { location ->
+                Log.i(TAG, location.toString())
+                viewModel.getWeatherInfoByLocation("${location?.latitude ?: BERLIN_LATITUDE},${location?.longitude ?: BERLIN_LONGITUDE}")
+            }
         }
     }
 
@@ -65,6 +75,7 @@ class MainActivity : ComponentActivity() {
                 updateLocation()
             } else {
                 Toast.makeText(this, "Please turn on location", Toast.LENGTH_LONG).show()
+                updateLocation() // Proceed to check if custom location exists anyway
             }
         } else {
             requestPermissions()
@@ -74,19 +85,42 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_ID) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                // Granted. Start getting the location information
-                updateLocation()
-            }
+            updateLocation() // Always try to update
         }
     }
 }
 
 
 @Composable
-fun MainScreen(viewModel: WeatherViewModel = viewModel()) {
+fun MainAppNavHost(
+    viewModel: WeatherViewModel,
+    settingsRepository: com.mintanables.LocoWeather.domain.repository.SettingsRepository
+) {
+    val navController = androidx.navigation.compose.rememberNavController()
+
+    NavHost(navController = navController, startDestination = "main") {
+        composable("main") {
+            MainScreen(
+                viewModel = viewModel, 
+                onNavigateToSettings = { navController.navigate("settings") }
+            )
+        }
+        composable("settings") {
+            com.mintanables.LocoWeather.ui.SettingsScreen(
+                settingsRepository = settingsRepository,
+                onBack = { 
+                    viewModel.getWeatherInfoByLocation("refresh") // RemoteSource handles resolution
+                    navController.popBackStack() 
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun MainScreen(viewModel: WeatherViewModel = viewModel(), onNavigateToSettings: () -> Unit = {}) {
     Surface(
-        color = MaterialTheme.colors.primary
+        color = androidx.compose.material3.MaterialTheme.colorScheme.background
     ) {
         var showLandingScreen by rememberSaveable { mutableStateOf(true) }
         val isLoading by rememberSaveable { viewModel.isLoading }
@@ -94,15 +128,7 @@ fun MainScreen(viewModel: WeatherViewModel = viewModel()) {
         if (showLandingScreen && isLoading) {
             LandingScreen(onTimeout = { showLandingScreen = false })
         } else {
-            HomeScreen()
+            HomeScreen(onNavigateToSettings = onNavigateToSettings)
         }
-    }
-}
-
-@Preview(device= Devices.PIXEL_4_XL)
-@Composable
-fun MainScreenPrevice() {
-    LocoWeatherTheme {
-        MainScreen()
     }
 }

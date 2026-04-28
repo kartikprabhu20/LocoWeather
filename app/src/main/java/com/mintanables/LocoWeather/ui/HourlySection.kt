@@ -100,7 +100,7 @@ fun HourlyListItem(item: HourlyItem, modifier: Modifier = Modifier) {
         Spacer(Modifier.width(16.dp))
 
         TitleSubtitleText(
-            title = "${item.temp} \u2109", 
+            title = "${item.temp} ${item.unitSymbol}", 
             subtitle = "" 
         )
     }

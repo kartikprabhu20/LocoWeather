@@ -9,22 +9,44 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class WeatherRemoteSource @Inject constructor(private val weatherService: WeatherService) : RemoteDataSource {
+class WeatherRemoteSource @Inject constructor(
+    private val weatherService: WeatherService,
+    private val settingsRepository: com.mintanables.LocoWeather.domain.repository.SettingsRepository
+) : RemoteDataSource {
 
     private val _weatherResponse = MutableLiveData<WeatherResponse>()
     override val weatherResponse: MutableLiveData<WeatherResponse>
         get() = _weatherResponse
 
     override suspend fun getWeatherInfoByLocation(location: String) {
-        val latLon = location.split(",")
-        val lat = if (latLon.isNotEmpty()) latLon[0] else ""
-        val lon = if (latLon.size > 1) latLon[1] else ""
+        val customLocation = settingsRepository.getLocation().trim()
+        val queryMap = mutableMapOf<String, String>()
+
+        if (customLocation.isNotEmpty()) {
+            // Check if user entered "lat,lon" manually
+            val parts = customLocation.split(",")
+            if (parts.size == 2 && parts[0].toDoubleOrNull() != null && parts[1].toDoubleOrNull() != null) {
+                queryMap["lat"] = parts[0].trim()
+                queryMap["lon"] = parts[1].trim()
+            } else {
+                queryMap["q"] = customLocation
+            }
+        } else {
+            // Fallback to GPS injected location parameter
+            val latLon = location.split(",")
+            if (latLon.size == 2) {
+                queryMap["lat"] = latLon[0]
+                queryMap["lon"] = latLon[1]
+            }
+        }
+
         val appId = com.mintanables.LocoWeather.data.Constants.API_KEY
+        val unit = settingsRepository.getUnit()
 
         try {
             coroutineScope {
-                val currentDeferred = async { weatherService.getCurrentWeather(lat, lon, appId, "imperial") }
-                val forecastDeferred = async { weatherService.getForecast(lat, lon, appId, "imperial") }
+                val currentDeferred = async { weatherService.getCurrentWeather(queryMap, appId, unit) }
+                val forecastDeferred = async { weatherService.getForecast(queryMap, appId, unit) }
 
                 val currentRes = currentDeferred.await()
                 val forecastRes = forecastDeferred.await()
@@ -81,8 +103,8 @@ class WeatherRemoteSource @Inject constructor(private val weatherService: Weathe
                         } ?: emptyList()
 
                         val weather = Weather(
-                            lat = lat.toDoubleOrNull(),
-                            lon = lon.toDoubleOrNull(),
+                            lat = queryMap["lat"]?.toDoubleOrNull(),
+                            lon = queryMap["lon"]?.toDoubleOrNull(),
                             current = currentObj,
                             hourly = hourlyList,
                             daily = dailyList
@@ -99,8 +121,8 @@ class WeatherRemoteSource @Inject constructor(private val weatherService: Weathe
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "getWeather Exception: \${e.message}")
-            _weatherResponse.postValue(WeatherResponse.Error("Connection Exception: \${e.message}"))
+            Log.e(TAG, "getWeather Exception: ${e.message}")
+            _weatherResponse.postValue(WeatherResponse.Error("Connection Exception: ${e.message}"))
         }
     }
 }

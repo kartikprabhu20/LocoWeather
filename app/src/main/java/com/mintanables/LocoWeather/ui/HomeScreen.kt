@@ -23,12 +23,12 @@ enum class HomeScreen {
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, onNavigateToSettings: () -> Unit = {}) {
     Scaffold(
         modifier = modifier.systemBarsPadding(),
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
-        HomeContent(Modifier.padding(innerPadding))
+        HomeContent(Modifier.padding(innerPadding), onNavigateToSettings = onNavigateToSettings)
     }
 }
 
@@ -37,6 +37,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
+    onNavigateToSettings: () -> Unit = {}
 ) {
     var tabSelected by remember { mutableStateOf(HomeScreen.Daily) }
 
@@ -47,7 +48,11 @@ fun HomeContent(
         backLayerBackgroundColor = MaterialTheme.colorScheme.background,
         frontLayerBackgroundColor = MaterialTheme.colorScheme.surface,
         appBar = {
-            HomeTabBar(tabSelected, onTabSelected = { tabSelected = it })
+            HomeTabBar(
+                tabSelected = tabSelected, 
+                onTabSelected = { tabSelected = it },
+                onNavigateToSettings = onNavigateToSettings
+            )
         },
         backLayerContent = {
             CurrentWeatherSection()

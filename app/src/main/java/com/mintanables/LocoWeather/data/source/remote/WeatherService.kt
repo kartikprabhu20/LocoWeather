@@ -9,16 +9,14 @@ import retrofit2.http.Query
 interface WeatherService {
     @GET("weather")
     suspend fun getCurrentWeather(
-        @Query("lat") lat: String,
-        @Query("lon") lon: String,
+        @retrofit2.http.QueryMap options: Map<String, String>,
         @Query("appid") appId: String,
         @Query("units") units: String
     ): Response<CurrentWeatherDto>
 
     @GET("forecast")
     suspend fun getForecast(
-        @Query("lat") lat: String,
-        @Query("lon") lon: String,
+        @retrofit2.http.QueryMap options: Map<String, String>,
         @Query("appid") appId: String,
         @Query("units") units: String
     ): Response<ForecastDto>
