@@ -4,140 +4,185 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
-
+import com.mintanables.LocoWeather.R
+import com.mintanables.LocoWeather.ui.theme.LocoWeatherTheme
 
 @Composable
-fun CurrentWeather(modifier: Modifier = Modifier,
-                   viewModel: WeatherViewModel = viewModel()
+fun CurrentWeather(
+    modifier: Modifier = Modifier,
+    temperature: String = "--",
+    summary: String = "--",
+    imageID: Int = R.drawable.clear_day,
+    pressure: String = "--",
+    humidity: String = "--",
+    visibility: String = "--",
+    dewpoint: String = "--"
 ) {
-
-    val temperature by rememberSaveable {viewModel.currentTemperature}
-    val summary by rememberSaveable {viewModel.currentSummary}
-    val imageID by rememberSaveable {viewModel.currentImageIcon}
-
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
-        .clip(RoundedCornerShape(corner = CornerSize(24.dp)))) {
-
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(corner = CornerSize(24.dp))),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "$temperature \u2109",
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier.padding(8.dp),
-                    fontSize = 60.sp
-                )
-                Image(
-                    painter = painterResource(imageID),
-                    contentDescription = "icon placeholder",
-                    modifier = Modifier
-                        .size(160.dp)
-                        .padding(4.dp))
-                Text(
-                    text = summary,
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier.padding(4.dp),
-                    fontSize = 20.sp
-                )
+            Text(
+                text = "$temperature \u2109",
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Image(
+                painter = painterResource(imageID),
+                contentDescription = "icon placeholder",
+                modifier = Modifier
+                    .size(140.dp)
+                    .padding(4.dp)
+            )
+            Text(
+                text = summary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 16.dp),
+                style = MaterialTheme.typography.titleLarge
+            )
+            
+            Divider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 24.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
-                OtherDetails(modifier)
-            }
+            OtherDetails(
+                pressure = pressure, 
+                humidity = humidity, 
+                visibility = visibility, 
+                dewpoint = dewpoint,
+                modifier = Modifier.padding(24.dp)
+            )
         }
-
     }
 }
 
 
 @Composable
-fun CurrentDate(viewModel: WeatherViewModel = hiltViewModel()) {
-    val currentDate by remember{viewModel.currentDate}
-
+fun CurrentDate(date: String = "Monday, Jan 1") {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
         contentAlignment = Alignment.Center,
     ) {
         Surface(
             shape = RoundedCornerShape(32.dp),
+            color = MaterialTheme.colorScheme.tertiaryContainer
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = currentDate,
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier.padding(8.dp),
-                    fontSize = 18.sp
-                )
-            }
+            Text(
+                text = date,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }
 
 @Composable
 fun OtherDetails(
-    modifier: Modifier = Modifier,
-    viewModel: WeatherViewModel = hiltViewModel()) {
-
-    val pressure by remember {viewModel.currentPressure}
-    val humidity by remember {viewModel.currentHumidity}
-    val visibility by remember {viewModel.currentVisibility}
-    val dewpoint by remember {viewModel.currentDewpoint}
-
-    Column(modifier = Modifier.padding(16.dp)) {
+    pressure: String,
+    humidity: String,
+    visibility: String,
+    dewpoint: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = "Details",
-            color = MaterialTheme.colors.primary,
-            fontSize = 24.sp,
-            style = MaterialTheme.typography.h3
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 12.dp)
         )
-        RowPairText("Humidity",humidity)
-        RowPairText("Pressure",pressure)
-        RowPairText("Visibility",visibility)
-        RowPairText("Dew Point",dewpoint)
+        // Ensure proper alignment
+        Column(
+            modifier = Modifier.fillMaxWidth(0.8f), // Limit width to keep text centered but nicely aligned
+        ) {
+            RowPairText("Humidity", humidity)
+            Spacer(modifier = Modifier.height(8.dp))
+            RowPairText("Pressure", pressure)
+            Spacer(modifier = Modifier.height(8.dp))
+            RowPairText("Visibility", visibility)
+            Spacer(modifier = Modifier.height(8.dp))
+            RowPairText("Dew Point", dewpoint)
+        }
     }
 }
 
 @Composable
 fun RowPairText(title: String, value: String) {
-    Row(){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Text(
             text = title,
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.weight(1f),
-            fontSize = 16.sp
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Start
         )
         Text(
             text = value,
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.weight(1f),
-            fontSize = 16.sp
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+            textAlign = TextAlign.End
         )
     }
 }
 
-@Preview(device= Devices.PIXEL_4_XL)
+// ------ PREVIEWS ------
+
+@Preview(showBackground = true, device = Devices.PIXEL_4_XL)
+@Composable
+fun CurrentWeatherPreview() {
+    LocoWeatherTheme {
+        CurrentWeather(
+            temperature = "72.4",
+            summary = "Clear Sky",
+            pressure = "1012.0",
+            humidity = "45",
+            visibility = "10000",
+            dewpoint = "55.0"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CurrentDatePreview() {
+    LocoWeatherTheme {
+        CurrentDate("Thursday, October 12")
+    }
+}
+
+@Preview(showBackground = true)
 @Composable
 fun RowPairTextPreview() {
-    RowPairText("test","test")
+    LocoWeatherTheme {
+        RowPairText("Humidity", "76%")
+    }
 }

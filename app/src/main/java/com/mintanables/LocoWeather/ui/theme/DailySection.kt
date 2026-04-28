@@ -6,9 +6,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,38 +17,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mintanables.LocoWeather.domain.model.DailyItem
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
 import com.mintanables.LocoWeather.ui.components.TitleCaptionText
 import com.mintanables.LocoWeather.ui.components.TitleSubtitleText
-import com.google.accompanist.insets.navigationBarsHeight
 import com.mintanables.LocoWeather.R
+import com.mintanables.LocoWeather.domain.model.Temp
 
 @Composable
-fun DailySection(modifier: Modifier = Modifier,
-                 viewModel: WeatherViewModel = viewModel()
+fun DailySection(
+    modifier: Modifier = Modifier,
+    viewModel: WeatherViewModel = viewModel()
 ) {
-
     val dailyList by viewModel.dailyList.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()) {
-
+        modifier = modifier.fillMaxWidth()
+    ) {
         Text(
             text = stringResource(id = R.string.next_days),
-            fontSize = 24.sp,
-            modifier = Modifier.padding(4.dp),
-            color = MaterialTheme.colors.primary
-            )
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(16.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
 
         DailyList(dailyList)
-
     }
 }
-
 
 @Composable
 private fun DailyList(
@@ -58,50 +55,67 @@ private fun DailyList(
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(weatherList) { dailyItem ->
-            Column(Modifier.fillParentMaxWidth()) {
+            Column(Modifier.fillMaxWidth()) {
                 DailyListItem(
-                    modifier = Modifier.fillParentMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     item = dailyItem,
                 )
                 Divider(
-                    color = MaterialTheme.colors.primary
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp)
                 )
             }
         }
         item {
-            Spacer(modifier = Modifier.navigationBarsHeight())
+            Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
         }
     }
 }
 
 @Composable
-fun DailyListItem(item: DailyItem,modifier: Modifier = Modifier) {
-
+fun DailyListItem(item: DailyItem, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
-            .padding(top = 12.dp, bottom = 12.dp)
+        modifier = modifier.padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier = Modifier.padding(8.dp)) {
             Image(
                 painter = painterResource(id = item.iconId),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(8.dp)
+                modifier = Modifier.size(48.dp)
             )
         }
-        Spacer(Modifier.width(24.dp))
+        Spacer(Modifier.width(16.dp))
 
-        TitleCaptionText(title = item.date, caption = item.summary.replaceFirstChar { it.uppercase() }, modifier.weight(1f))
+        TitleCaptionText(
+            title = item.date, 
+            caption = item.summary.replaceFirstChar { it.uppercase() }, 
+            modifier = Modifier.weight(1f)
+        )
 
-        Spacer(Modifier.width(24.dp))
+        Spacer(Modifier.width(16.dp))
 
-        TitleSubtitleText(title = "${item.temperatureHigh} \u2109" , subtitle =  "${item.temperatureLow} \u2109" )
+        TitleSubtitleText(
+            title = "${item.temperatureHigh} \u2109", 
+            subtitle = "${item.temperatureLow} \u2109"
+        )
     }
 }
 
-@Preview(device= Devices.PIXEL_4_XL)
+@Preview(showBackground = true, device = Devices.PIXEL_4_XL)
 @Composable
-fun DailyItemPreview(){
-    DailyListItem(DailyItem(summary = "summary", dt = 1111111, temperatureHigh = 10.0, temperatureLow = 1.0, iconId = 0))
+fun DailyItemPreview() {
+    LocoWeatherTheme {
+        DailyListItem(
+            DailyItem(
+                summary = "Clear Skies", 
+                dt = 1111111, 
+                temp = Temp(min = 40.0, max = 65.0),
+                temperatureHigh = 65.0, 
+                temperatureLow = 40.0, 
+                iconId = R.drawable.clear_day,
+                date = "28/04/2026"
+            )
+        )
+    }
 }

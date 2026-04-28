@@ -36,31 +36,34 @@ fun getFormattedTime(time: Long): String {
 }
 
 fun formatIcons(icon: String?): Int {
-    when(icon){
-        "clear-day"-> return  R.drawable.clear_day
-        "cloudy"-> return  R.drawable.cloudy
-        "clear-night"-> return  R.drawable.clear_night
-        "fog"-> return  R.drawable.fog
-        "partly-cloudy-day"-> return  R.drawable.partly_cloudy_day
-
-        "partly-cloudy-night"-> return  R.drawable.partly_cloudy_night
-        "rain-snow-showers-day"-> return  R.drawable.rain_snow
-        "rain-snow-showers-night"-> return  R.drawable.rain_snow
-        "rain-snow"-> return  R.drawable.rain_snow
-        "rain"-> return  R.drawable.rain
-
-        "showers-day"-> return  R.drawable.showers_day
-        "showers-night"-> return  R.drawable.showers_night
-        "sleet"-> return  R.drawable.sleet
-        "snow-showers-day"-> return  R.drawable.snow_showers_day
-        "snow-showers-night"-> return  R.drawable.snow_showers_night
-
-        "snow"-> return  R.drawable.snow
-        "thunder-rain"-> return  R.drawable.thunder_rain
-        "hunder-showers-day"-> return  R.drawable.thunder_showers_day
-        "thunder-showers-night"-> return  R.drawable.thunder_showers_night
-        "thunder"-> return  R.drawable.thunder
-        "wind"-> return  R.drawable.wind
+    if (icon == null) return R.drawable.clear_day
+    
+    // OpenWeatherMap icons
+    // 01d: clear sky day, 01n: clear sky night
+    // 02d: few clouds day, 02n: few clouds night
+    // 03d, 03n: scattered clouds
+    // 04d, 04n: broken clouds
+    // 09d, 09n: shower rain
+    // 10d, 10n: rain
+    // 11d, 11n: thunderstorm
+    // 13d, 13n: snow
+    // 50d, 50n: mist
+    
+    return when(icon) {
+        "01d" -> R.drawable.clear_day
+        "01n" -> R.drawable.clear_night
+        "02d" -> R.drawable.partly_cloudy_day
+        "02n" -> R.drawable.partly_cloudy_night
+        "03d", "03n" -> R.drawable.cloudy
+        "04d", "04n" -> R.drawable.cloudy
+        "09d" -> R.drawable.showers_day
+        "09n" -> R.drawable.showers_night
+        "10d" -> R.drawable.rain
+        "10n" -> R.drawable.rain
+        "11d", "11n" -> R.drawable.thunder_rain
+        "13d" -> R.drawable.snow_showers_day
+        "13n" -> R.drawable.snow_showers_night
+        "50d", "50n" -> R.drawable.fog
+        else -> R.drawable.clear_day
     }
-    return R.drawable.clear_day
 }
