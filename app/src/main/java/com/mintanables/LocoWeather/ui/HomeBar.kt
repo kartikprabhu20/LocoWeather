@@ -34,15 +34,15 @@ fun HomeTabBar(
                 ) 
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                titleContentColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
             ),
             actions = {
                 IconButton(onClick = onNavigateToSettings) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = "Settings",
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -69,8 +69,8 @@ fun Tabs(
     TabRow(
         selectedTabIndex = tabSelected.ordinal,
         modifier = modifier.padding(bottom = 8.dp),
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.primary, // Blue background
+        contentColor = MaterialTheme.colorScheme.onPrimary, // White content
         indicator = { },
         divider = { }
     ) {
@@ -81,7 +81,7 @@ fun Tabs(
             if (selected) {
                 textModifier =
                     Modifier
-                        .border(BorderStroke(2.dp, MaterialTheme.colorScheme.primary), RoundedCornerShape(16.dp))
+                        .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onPrimary), RoundedCornerShape(16.dp))
                         .then(textModifier)
             }
 
@@ -89,8 +89,8 @@ fun Tabs(
                 selected = selected,
                 onClick = { onTabSelected(WeatherTab.values()[index]) },
                 modifier = textModifier.clip(RoundedCornerShape(32.dp)),
-                selectedContentColor = MaterialTheme.colorScheme.primary,
-                unselectedContentColor = MaterialTheme.colorScheme.onBackground
+                selectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                unselectedContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
             ) {
                 Text(
                     text = title,

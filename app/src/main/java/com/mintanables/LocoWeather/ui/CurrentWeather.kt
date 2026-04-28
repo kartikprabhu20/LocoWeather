@@ -38,7 +38,7 @@ fun CurrentWeather(
             .padding(16.dp)
             .clip(RoundedCornerShape(corner = CornerSize(24.dp))),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = MaterialTheme.colorScheme.surface, // Pure Surface
         )
     ) {
         Column(
@@ -87,11 +87,12 @@ fun CurrentDate(date: String = "Monday, Jan 1") {
     ) {
         Surface(
             shape = RoundedCornerShape(32.dp),
-            color = MaterialTheme.colorScheme.tertiaryContainer
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 2.dp
         ) {
             Text(
                 text = date,
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 style = MaterialTheme.typography.bodyLarge
             )

@@ -53,9 +53,9 @@ fun HomeContent(
     BackdropScaffold(
         modifier = modifier,
         scaffoldState = rememberBackdropScaffoldState(BackdropValue.Revealed),
-        frontLayerScrimColor = Color.Unspecified,
-        backLayerBackgroundColor = MaterialTheme.colorScheme.background,
-        frontLayerBackgroundColor = MaterialTheme.colorScheme.surface,
+        frontLayerScrimColor = Color.Transparent,
+        backLayerBackgroundColor = MaterialTheme.colorScheme.primary,
+        frontLayerBackgroundColor = MaterialTheme.colorScheme.background,
         appBar = {
             HomeTabBar(
                 tabSelected = tabSelected, 
