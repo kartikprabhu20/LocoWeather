@@ -1,13 +1,25 @@
 package com.mintanables.LocoWeather.data.source.remote
 
-import com.mintanables.LocoWeather.domain.model.Weather
-import retrofit2.Call
+import com.mintanables.LocoWeather.data.source.remote.dto.CurrentWeatherDto
+import com.mintanables.LocoWeather.data.source.remote.dto.ForecastDto
+import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface WeatherService {
-    @GET("{location}")
-    fun getWeatherInfoByLocation(
-        @Path("location") location: String
-    ): Call<Weather>
+    @GET("weather")
+    suspend fun getCurrentWeather(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") appId: String,
+        @Query("units") units: String
+    ): Response<CurrentWeatherDto>
+
+    @GET("forecast")
+    suspend fun getForecast(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") appId: String,
+        @Query("units") units: String
+    ): Response<ForecastDto>
 }

@@ -11,14 +11,15 @@ import com.mintanables.LocoWeather.Utils.getFormattedDateOnly
 import com.mintanables.LocoWeather.Utils.getFormattedTime
 import com.mintanables.LocoWeather.data.Constants.TAG
 import com.mintanables.LocoWeather.data.repository.WeatherRepositoryImpl
-import com.mintanables.LocoWeather.domain.model.DailyData
-import com.mintanables.LocoWeather.domain.model.HourlyData
+import com.mintanables.LocoWeather.domain.model.DailyItem
+import com.mintanables.LocoWeather.domain.model.HourlyItem
 import com.mintanables.LocoWeather.domain.model.Weather
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -42,12 +43,12 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
     var currentDewpoint = mutableStateOf("")
 
 
-    val _hourlyList = MutableStateFlow<List<HourlyData>>(emptyList())
-    val hourlyList: StateFlow<List<HourlyData>>
+    val _hourlyList = MutableStateFlow<List<HourlyItem>>(emptyList())
+    val hourlyList: StateFlow<List<HourlyItem>>
         get() = _hourlyList
 
-    val _dailyList = MutableStateFlow<List<DailyData>>(emptyList())
-    val dailyList: StateFlow<List<DailyData>>
+    val _dailyList = MutableStateFlow<List<DailyItem>>(emptyList())
+    val dailyList: StateFlow<List<DailyItem>>
         get() = _dailyList
 
     init {
@@ -56,29 +57,29 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
                 is WeatherResponse.Success->{
                     Log.i(TAG,"[WeatherViewModel] " +it.weather.toString())
                     _weather.value = it.weather
-                    val currently = _weather.value.currently
-                    currentDate.value = getFormattedDate(currently?.time)
-                    currentSummary.value = currently?.summary ?: "--"
-                    currentTemperature.value = String.format("%.2f", currently?.temperature)
-                    currentPressure.value = String.format("%.2f",currently?.pressure )
-                    currentVisibility.value = currently?.visibility.toString()
-                    currentHumidity.value =  String.format("%.2f",currently?.humidity)
-                    currentDewpoint.value =  String.format("%.2f",currently?.dewPoint)
-                    currentImageIcon.value = formatIcons(currently?.icon)
-                    _dailyList.value = _weather.value.daily?.data?.map{
+                    val current = _weather.value.current
+                    currentDate.value = getFormattedDate(current?.dt)
+                    currentSummary.value = current?.weather?.firstOrNull()?.description?.replaceFirstChar { it.uppercase() } ?: "--"
+                    currentTemperature.value = String.format("%.2f", current?.temp)
+                    currentPressure.value = String.format("%.2f",current?.pressure )
+                    currentVisibility.value = current?.visibility.toString()
+                    currentHumidity.value =  String.format("%.2f",current?.humidity)
+                    currentDewpoint.value =  String.format("%.2f",current?.dewPoint)
+                    currentImageIcon.value = formatIcons(current?.weather?.firstOrNull()?.icon)
+                    _dailyList.value = _weather.value.daily?.map{
                         it.apply {
-                            temperatureLow = String.format("%.2f",it.temperatureLow).toDouble()
-                            temperatureHigh =  String.format("%.2f",it.temperatureHigh).toDouble()
-                            date = getFormattedDateOnly(it.time)
-                            iconId = formatIcons(it.icon)
+                            temperatureLow = String.format(Locale.US, "%.2f", it.temp.min).toDouble()
+                            temperatureHigh =  String.format(Locale.US, "%.2f", it.temp.max).toDouble()
+                            date = getFormattedDateOnly(it.dt)
+                            iconId = formatIcons(it.weather?.firstOrNull()?.icon)
                         }
                     } ?: emptyList()
 
-                    _hourlyList.value = _weather.value.hourly?.data?.map{
+                    _hourlyList.value = _weather.value.hourly?.map{
                         it.apply {
-                            temperature = String.format("%.2f",it.temperature).toDouble()
-                            formatedTime = getFormattedTime(it.time)
-                            iconId = formatIcons(it.icon)
+                            temp = String.format(Locale.US, "%.2f", it.temp).toDouble()
+                            formatedTime = getFormattedTime(it.dt)
+                            iconId = formatIcons(it.weather?.firstOrNull()?.icon)
                         }
                     } ?: emptyList()
 
@@ -86,6 +87,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
                 }
                 is WeatherResponse.Error ->{
                     Log.e(TAG,"[WeatherViewModel] "+it.errorMessage)
+                    isLoading.value = false
+                    currentSummary.value = "Error loading weather data."
                 }
             }
         }
@@ -97,4 +100,3 @@ class WeatherViewModel @Inject constructor(private val weatherRepository: Weathe
          weatherRepository.getWeather(location)
     }
 }
-

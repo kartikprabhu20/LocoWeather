@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mintanables.LocoWeather.domain.model.HourlyData
+import com.mintanables.LocoWeather.domain.model.HourlyItem
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
 import com.mintanables.LocoWeather.ui.components.TitleCaptionText
 import com.mintanables.LocoWeather.ui.components.TitleSubtitleText
@@ -53,14 +53,14 @@ fun HourlySection(modifier: Modifier = Modifier,
 
 @Composable
 private fun HourlyList(
-    weatherList: List<HourlyData>,
+    weatherList: List<HourlyItem>,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(weatherList) { hourlyItem ->
             Column(Modifier.fillParentMaxWidth()) {
-                HourlyItem(
+                HourlyListItem(
                     modifier = Modifier.fillParentMaxWidth(),
                     item = hourlyItem,
                 )
@@ -76,7 +76,7 @@ private fun HourlyList(
 }
 
 @Composable
-fun HourlyItem(item: HourlyData, modifier: Modifier = Modifier) {
+fun HourlyListItem(item: HourlyItem, modifier: Modifier = Modifier) {
 
     Row(
         modifier = modifier
@@ -93,10 +93,10 @@ fun HourlyItem(item: HourlyData, modifier: Modifier = Modifier) {
         }
         Spacer(Modifier.width(24.dp))
 
-        TitleCaptionText(title = item.formatedTime, caption = item.summary, modifier.weight(1f))
+        TitleCaptionText(title = item.formatedTime, caption = item.weather?.firstOrNull()?.description?.replaceFirstChar { it.uppercase() } ?: "", modifier.weight(1f))
 
         Spacer(Modifier.width(24.dp))
 
-        TitleSubtitleText(title = "${item.temperature} \u2109" , subtitle =  "" )
+        TitleSubtitleText(title = "${item.temp} \u2109" , subtitle =  "" )
     }
 }

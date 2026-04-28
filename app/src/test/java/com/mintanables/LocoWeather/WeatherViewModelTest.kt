@@ -97,13 +97,19 @@ class WeatherViewModelTest {
 
     @Test
     fun `read sample success json file`() = runBlocking {
-        val content = File("src/main/res/mock.txt").readText()
+        val weatherContent = File("src/main/res/mock_weather.txt").readText()
+        val forecastContent = File("src/main/res/mock_forecast.txt").readText()
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(content)
-        )
+        mockWebServer.dispatcher = object : okhttp3.mockwebserver.Dispatcher() {
+            override fun dispatch(request: okhttp3.mockwebserver.RecordedRequest): MockResponse {
+                if (request.path?.contains("weather") == true) {
+                    return MockResponse().setResponseCode(200).setBody(weatherContent)
+                } else if (request.path?.contains("forecast") == true) {
+                    return MockResponse().setResponseCode(200).setBody(forecastContent)
+                }
+                return MockResponse().setResponseCode(404)
+            }
+        }
 
         viewModel.getWeatherInfoByLocation("${Constants.BERLIN_LATITUDE},${Constants.BERLIN_LONGITUDE}")
 
@@ -112,6 +118,6 @@ class WeatherViewModelTest {
 
         val temp = viewModel.currentTemperature.value
         println("DEBUG: Temperature value is '$temp'")
-        assertTrue("Expected 52.10 but got '$temp'", temp.contains("52.1"))
+        assertTrue("Expected 42.60 but got '$temp'", temp.contains("42.60"))
     }
 }

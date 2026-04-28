@@ -1,0 +1,18 @@
+{
+  "cod": "200",
+  "message": 0,
+  "cnt": 40,
+  "list": [
+    {
+      "dt": 1777356000,
+      "main": {"temp": 42.6, "feels_like": 42.0, "temp_min": 40.0, "temp_max": 45.0, "pressure": 1026, "sea_level": 1026, "grnd_level": 1020, "humidity": 57, "temp_kf": -1.55},
+      "weather": [{"id": 800, "main": "Clear", "description": "clear sky", "icon": "01d"}],
+      "clouds": {"all": 0},
+      "wind": {"speed": 4.42, "deg": 91, "gust": 8.56},
+      "visibility": 10000,
+      "pop": 0,
+      "sys": {"pod": "d"},
+      "dt_txt": "2026-04-28 06:00:00"
+    }
+  ]
+}

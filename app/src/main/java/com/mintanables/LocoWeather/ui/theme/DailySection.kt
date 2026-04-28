@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mintanables.LocoWeather.domain.model.DailyData
+import com.mintanables.LocoWeather.domain.model.DailyItem
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
 import com.mintanables.LocoWeather.ui.components.TitleCaptionText
 import com.mintanables.LocoWeather.ui.components.TitleSubtitleText
@@ -52,14 +52,14 @@ fun DailySection(modifier: Modifier = Modifier,
 
 @Composable
 private fun DailyList(
-    weatherList: List<DailyData>,
+    weatherList: List<DailyItem>,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(modifier = modifier, state = listState) {
         items(weatherList) { dailyItem ->
             Column(Modifier.fillParentMaxWidth()) {
-                DailyItem(
+                DailyListItem(
                     modifier = Modifier.fillParentMaxWidth(),
                     item = dailyItem,
                 )
@@ -75,7 +75,7 @@ private fun DailyList(
 }
 
 @Composable
-fun DailyItem(item: DailyData,modifier: Modifier = Modifier) {
+fun DailyListItem(item: DailyItem,modifier: Modifier = Modifier) {
 
     Row(
         modifier = modifier
@@ -92,7 +92,7 @@ fun DailyItem(item: DailyData,modifier: Modifier = Modifier) {
         }
         Spacer(Modifier.width(24.dp))
 
-        TitleCaptionText(title = item.date, caption = item.summary.toString(), modifier.weight(1f))
+        TitleCaptionText(title = item.date, caption = item.summary.replaceFirstChar { it.uppercase() }, modifier.weight(1f))
 
         Spacer(Modifier.width(24.dp))
 
@@ -103,5 +103,5 @@ fun DailyItem(item: DailyData,modifier: Modifier = Modifier) {
 @Preview(device= Devices.PIXEL_4_XL)
 @Composable
 fun DailyItemPreview(){
-    DailyItem(DailyData(summary = "summary",time = 1111111, temperatureHigh = 10.0,temperatureLow = 1.0, iconId = 0))
+    DailyListItem(DailyItem(summary = "summary", dt = 1111111, temperatureHigh = 10.0, temperatureLow = 1.0, iconId = 0))
 }
