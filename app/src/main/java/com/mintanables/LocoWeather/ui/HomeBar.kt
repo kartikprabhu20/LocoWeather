@@ -20,8 +20,8 @@ import com.mintanables.LocoWeather.ui.theme.LocoWeatherTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTabBar(
-    tabSelected: HomeScreen,
-    onTabSelected: (HomeScreen) -> Unit,
+    tabSelected: WeatherTab,
+    onTabSelected: (WeatherTab) -> Unit,
     modifier: Modifier = Modifier,
     onNavigateToSettings: () -> Unit = {}
 ) {
@@ -51,9 +51,9 @@ fun HomeTabBar(
         TabBar(modifier = modifier) { tabBarModifier ->
             Tabs(
                 modifier = tabBarModifier,
-                titles = HomeScreen.values().map { it.name },
+                titles = WeatherTab.values().map { it.name },
                 tabSelected = tabSelected,
-                onTabSelected = { newTab -> onTabSelected(HomeScreen.values()[newTab.ordinal]) }
+                onTabSelected = { newTab -> onTabSelected(WeatherTab.values()[newTab.ordinal]) }
             )
         }
     }
@@ -63,8 +63,8 @@ fun HomeTabBar(
 fun Tabs(
     modifier: Modifier,
     titles: List<String>,
-    tabSelected: HomeScreen,
-    onTabSelected: (HomeScreen) -> Unit
+    tabSelected: WeatherTab,
+    onTabSelected: (WeatherTab) -> Unit
 ) {
     TabRow(
         selectedTabIndex = tabSelected.ordinal,
@@ -87,7 +87,7 @@ fun Tabs(
 
             Tab(
                 selected = selected,
-                onClick = { onTabSelected(HomeScreen.values()[index]) },
+                onClick = { onTabSelected(WeatherTab.values()[index]) },
                 modifier = textModifier.clip(RoundedCornerShape(32.dp)),
                 selectedContentColor = MaterialTheme.colorScheme.primary,
                 unselectedContentColor = MaterialTheme.colorScheme.onBackground
@@ -127,7 +127,7 @@ fun TabBar(
 fun HomeTabBarPreview() {
     LocoWeatherTheme {
         HomeTabBar(
-            tabSelected = HomeScreen.Daily,
+            tabSelected = WeatherTab.Daily,
             onTabSelected = {}
         )
     }

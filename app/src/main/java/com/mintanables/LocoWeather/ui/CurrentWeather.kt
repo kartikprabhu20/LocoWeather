@@ -46,7 +46,7 @@ fun CurrentWeather(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "$temperature \u2109",
+                text = "$temperature",
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
                 style = MaterialTheme.typography.headlineLarge

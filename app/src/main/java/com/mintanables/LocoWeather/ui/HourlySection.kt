@@ -17,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mintanables.LocoWeather.domain.model.HourlyItem
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
 import com.mintanables.LocoWeather.ui.components.TitleCaptionText
@@ -31,7 +30,7 @@ import com.mintanables.LocoWeather.domain.model.WeatherCondition
 @Composable
 fun HourlySection(
     modifier: Modifier = Modifier,
-    viewModel: WeatherViewModel = viewModel()
+    viewModel: WeatherViewModel = hiltViewModel()
 ) {
     val hourlyList by viewModel.hourlyList.collectAsState()
 

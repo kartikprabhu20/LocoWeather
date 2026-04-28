@@ -9,14 +9,13 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mintanables.LocoWeather.Utils.LocationUtils
@@ -118,8 +117,9 @@ fun MainAppNavHost(
 }
 
 @Composable
-fun MainScreen(viewModel: WeatherViewModel = viewModel(), onNavigateToSettings: () -> Unit = {}) {
+fun MainScreen(viewModel: WeatherViewModel = hiltViewModel(), onNavigateToSettings: () -> Unit = {}) {
     Surface(
+        modifier = Modifier.fillMaxSize(),
         color = androidx.compose.material3.MaterialTheme.colorScheme.background
     ) {
         var showLandingScreen by rememberSaveable { mutableStateOf(true) }
@@ -128,7 +128,7 @@ fun MainScreen(viewModel: WeatherViewModel = viewModel(), onNavigateToSettings: 
         if (showLandingScreen && isLoading) {
             LandingScreen(onTimeout = { showLandingScreen = false })
         } else {
-            HomeScreen(onNavigateToSettings = onNavigateToSettings)
+            HomeScreen(viewModel = viewModel, onNavigateToSettings = onNavigateToSettings)
         }
     }
 }

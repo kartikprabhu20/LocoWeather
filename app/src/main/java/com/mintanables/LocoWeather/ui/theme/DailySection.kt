@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mintanables.LocoWeather.domain.model.DailyItem
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
 import com.mintanables.LocoWeather.ui.components.TitleCaptionText
@@ -28,7 +28,7 @@ import com.mintanables.LocoWeather.domain.model.Temp
 @Composable
 fun DailySection(
     modifier: Modifier = Modifier,
-    viewModel: WeatherViewModel = viewModel()
+    viewModel: WeatherViewModel = hiltViewModel()
 ) {
     val dailyList by viewModel.dailyList.collectAsState()
 

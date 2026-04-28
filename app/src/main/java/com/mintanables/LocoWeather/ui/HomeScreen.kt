@@ -12,23 +12,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mintanables.LocoWeather.presentation.WeatherViewModel
 import com.mintanables.LocoWeather.ui.theme.DailySection
 import androidx.compose.ui.tooling.preview.Preview
 import com.mintanables.LocoWeather.ui.theme.LocoWeatherTheme
 
-enum class HomeScreen {
+enum class WeatherTab {
     Daily, Hourly
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onNavigateToSettings: () -> Unit = {}) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: WeatherViewModel = hiltViewModel(),
+    onNavigateToSettings: () -> Unit = {}
+) {
     Scaffold(
         modifier = modifier.systemBarsPadding(),
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
-        HomeContent(Modifier.padding(innerPadding), onNavigateToSettings = onNavigateToSettings)
+        HomeContent(
+            modifier = Modifier.padding(innerPadding),
+            viewModel = viewModel,
+            onNavigateToSettings = onNavigateToSettings
+        )
     }
 }
 
@@ -37,9 +45,10 @@ fun HomeScreen(modifier: Modifier = Modifier, onNavigateToSettings: () -> Unit =
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
+    viewModel: WeatherViewModel,
     onNavigateToSettings: () -> Unit = {}
 ) {
-    var tabSelected by remember { mutableStateOf(HomeScreen.Daily) }
+    var tabSelected by remember { mutableStateOf(WeatherTab.Daily) }
 
     BackdropScaffold(
         modifier = modifier,
@@ -55,15 +64,15 @@ fun HomeContent(
             )
         },
         backLayerContent = {
-            CurrentWeatherSection()
+            CurrentWeatherSection(viewModel = viewModel)
         },
         frontLayerContent = {
             when (tabSelected) {
-                HomeScreen.Daily -> {
-                    DailySection(modifier)
+                WeatherTab.Daily -> {
+                    DailySection()
                 }
-                HomeScreen.Hourly ->{
-                    HourlySection(modifier)
+                WeatherTab.Hourly ->{
+                    HourlySection()
                 }
             }
         }
@@ -73,7 +82,7 @@ fun HomeContent(
 @Composable
 fun CurrentWeatherSection(
     modifier: Modifier = Modifier,
-    viewModel: WeatherViewModel = viewModel()
+    viewModel: WeatherViewModel
 ) {
     val temperature by remember { viewModel.currentTemperature }
     val summary by remember { viewModel.currentSummary }
